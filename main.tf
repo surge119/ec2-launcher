@@ -46,6 +46,7 @@ resource "aws_subnet" "subnet" {
   vpc_id = aws_vpc.vpc.id
 
   cidr_block = "10.0.0.0/24"
+  map_public_ip_on_launch = true
 
   tags = {
     Name = "${var.name}-subnet"
@@ -84,11 +85,13 @@ resource "aws_security_group" "security_group" {
     }
 }
 
-resource "aws_eip" "elastic_ip" {
-  instance = aws_instance.ec2_instance.id
-}
+# resource "aws_eip" "elastic_ip" {
+#   instance = aws_instance.ec2_instance.id
+# }
 
 resource "aws_instance" "ec2_instance" {
+    count = var.instance_count
+
     # Ubuntu 22.04 ami
     ami = var.ami
 
@@ -99,11 +102,11 @@ resource "aws_instance" "ec2_instance" {
     vpc_security_group_ids = [ aws_security_group.security_group.id ]
 
     root_block_device {
-      volume_size = 150
-      volume_type = "gp3"
+      volume_size = 30
+      volume_type = "gp2"
     }
 
     tags = {
-      Name = "${var.name}-ec2"
+      Name = "${var.name}-ec2-${count.index}"
     }
 }

@@ -10,7 +10,12 @@ variable "ports" {
 
 variable "instance_type" {
   type = string
-  default = "c7g.4xlarge"
+  default = "t4g.nano"
+}
+
+variable "instance_count" {
+  type = number
+  default = 5
 }
 
 variable "ami" {
