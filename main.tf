@@ -86,26 +86,22 @@ resource "aws_security_group" "security_group" {
   }
 }
 
-resource "aws_eip" "elastic_ip" {
-  instance = aws_instance.ec2_instance.id
-}
-
-resource "aws_instance" "ec2_instance" {
-  # Ubuntu 22.04 ami
+resource "aws_instance" "instance" {
   ami = var.ami
 
   instance_type = var.instance_type
 
-  key_name               = aws_key_pair.key_pair.key_name
-  subnet_id              = aws_subnet.subnet.id
-  vpc_security_group_ids = [aws_security_group.security_group.id]
+  key_name                    = aws_key_pair.key_pair.key_name
+  subnet_id                   = aws_subnet.subnet.id
+  vpc_security_group_ids      = [aws_security_group.security_group.id]
+  associate_public_ip_address = true
 
   root_block_device {
-    volume_size = 150
+    volume_size = var.size
     volume_type = "gp3"
   }
 
   tags = {
-    Name = "${var.name}-ec2"
+    Name = "${var.name}-instance"
   }
 }
